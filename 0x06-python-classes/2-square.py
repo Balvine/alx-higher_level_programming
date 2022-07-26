@@ -16,3 +16,15 @@ class Square:
         elif size < 0:
             raise ValueError("size must be >= 0")
         self.__size = size
+
+
+
+
+
+
+let binaryN = (N  >> 0).toString(2);
+let maxGap = 0;
+
+for (let i=0; i < binaryN.length; i==){
+    for 
+}
