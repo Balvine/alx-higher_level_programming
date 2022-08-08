@@ -1,25 +1,26 @@
 #!/usr/bin/python3
+"""Defines a class Base
+This is the "base" class of all other classes in this project.
+Implementing this helps manage the id attribute in all future classes to
+avoid duplicating code (and bugs).
 """
-This module implements `base` class of all other classes in this project.
-The goal of it is to manage id attribute in all your future classes
-and to avoid duplicating the same code (by extension, same bugs)
-"""
+
 import json
 import turtle
 
-
 class Base:
-    """
-    implementation
-    """
+    """Module implementation"""
 
     __nb_objects = 0
 
     def __init__(self, id=None):
-        """initialization
+        """Initialization
 
         Args:
-            id (int, optional): object id. Defaults to None.
+            param id = id of the instace
+            If id is not None,id is set to the id passed in.
+            If id is None, id is set to the no. of objects
+            created so far, plus one.
         """
         if id is not None:
             self.id = id
@@ -29,7 +30,11 @@ class Base:
 
     @staticmethod
     def to_json_string(list_dictionaries: dict):
-        """list to json"""
+        """
+        This function converts a list of dictionaries to a JSON string.
+        param list_dictionaries: a list of dictionaries
+        return: A JSON string representation of list_dictionaries.
+        """
         if list_dictionaries is None:
             return "[]"
         else:
@@ -37,7 +42,10 @@ class Base:
 
     @classmethod
     def save_to_file(cls, list_objs):
-        """save to json file"""
+        """Writes a list of dictionaries to a json file
+        param cls: the class to call the method from
+        param list_objs: list of instances which inherits of Base
+        """
         filename = cls.__name__ + ".json"
         text = []
         if list_objs is not None:
@@ -48,7 +56,11 @@ class Base:
 
     @staticmethod
     def from_json_string(json_string):
-        """transform a JSON string representation `json_string` to a list"""
+        """Transforms a JSON string representation `json_string` to a list
+        Takes a json string and returns a python object.
+        param json_string: the string to be converted
+        return: A list of JSON string representation.
+        """
         if json_string is None or len(json_string) == 0:
             return []
         else:
@@ -56,7 +68,14 @@ class Base:
 
     @classmethod
     def create(cls, **dictionary):
-        """create a new object from dictionary"""
+        """Creates a new object from dictionary
+        If the dictionary is not empty, create
+        a new instance of the class, update
+        the attributes of the new instance, and return
+        the new instance.
+
+        param cls: the class calling the function
+        return: A new instance of the class with the attributes updated"""
         if cls.__name__ == "Rectangle":
             new = cls(10, 10)
         elif cls.__name__ == "Square":
@@ -66,7 +85,19 @@ class Base:
 
     @classmethod
     def load_from_file(cls):
-        """load from file"""
+        """Loads from file
+        If the file exists, read it and return a list of
+        instances created from the file's JSON string.
+        Else, return an empty list.
+
+        The first line creates the filename from the class name.
+        The try/except block attempts to open the file and read it.
+        If the file doesn't exist, the
+        except block returns an empty list
+
+        param cls: the class we're calling the method on
+        return: A list of instances
+        """
         filename = cls.__name__ + ".json"
         object_created = []
         with open(filename, 'r') as f:
@@ -79,7 +110,15 @@ class Base:
 
     @classmethod
     def save_to_file_csv(cls, list_objs):
-        """save to csv file"""
+        """Saves to csv file
+        If the list of objects is empty, write an empty string to the file.
+        Else, convert the list of objects to a list of dictionaries,
+        write the keys of the first dictionary as the header, and
+        write the dictionaries as rows.
+
+        param cls: the class we're calling the method on
+        param list_objs: list of objects to be saved
+        """
         filename = cls.__name__ + ".csv"
         content = ""
         text = []
@@ -97,7 +136,13 @@ class Base:
 
     @classmethod
     def load_from_file_csv(cls):
-        """load from csv"""
+        """Loads from csv
+        It reads a csv file, creates a list of dictionaries,
+        then creates a list of objects
+
+        param cls: the class that we're calling the method on
+        return: A list of objects
+        """
         filename = cls.__name__ + ".csv"
         object_created = []
 
@@ -112,7 +157,8 @@ class Base:
 
     @classmethod
     def draw(cls, list_rectangles, list_squares):
-        """draw the figure
+        """Draws the figure(Rectangles and Squares) using the turtle
+        module.
         """
         window = turtle.Screen()
         pen = turtle.Pen()
