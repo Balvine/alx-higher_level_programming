@@ -1,100 +1,97 @@
 #include "sort.h"
 
-void swap_node_ahead(listint_t **list, listint_t **tail, listint_t **shaker);
-void swap_node_behind(listint_t **list, listint_t **tail, listint_t **shaker);
-void cocktail_sort_list(listint_t **list);
-
 /**
- * swap_node_ahead - swaps a node in a listint_t doubly-linked list
- *	list of integers with the node ahead of it.
- * @list: ptr to the head of a doubly-linked list of integers.
- * @tail: ptr to the tail of the doubly-linked list.
- * @shaker: ptr to the current swapping node of the cocktail shaker algo.
- */
-
-void swap_node_ahead(listint_t **list, listint_t **tail, listint_t **shaker)
-{
-	listint_t *tmp = (*shaker)->next;
-
-	if ((*shaker)->prev != NULL)
-		(*shaker)->prev->next = tmp;
-	else
-		*list = tmp;
-	tmp->prev = (*shaker)->prev;
-	(*shaker)->next = tmp->next;
-	if (tmp->next != NULL)
-		tmp->next->prev = *shaker;
-	else
-		*tail = *shaker;
-	(*shaker)->prev = tmp;
-	tmp->next = *shaker;
-	*shaker = tmp;
-}
-
-/**
- * swap_node_behind - swaps a node in a listint_t doubly-linked
- *	list of integers with the node behind it.
- * @list: ptr to the head of a doubly-linked list of integers.
- * @tail: ptr to the tail of the doubly-linked list.
- * @shaker: ptr to the current swapping node of the cocktail shaker algo.
- */
-
-void swap_node_behind(listint_t **list, listint_t **tail, listint_t **shaker)
-{
-	listint_t *tmp = (*shaker)->prev;
-
-	if ((*shaker)->next != NULL)
-		(*shaker)->next->prev = tmp;
-	else
-		*tail = tmp;
-	tmp->next = (*shaker)->next;
-	(*shaker)->prev = tmp->prev;
-	if (tmp->prev != NULL)
-		tmp->prev->next = *shaker;
-	else
-		*list = *shaker;
-	(*shaker)->next = tmp;
-	tmp->prev = *shaker;
-	*shaker = tmp;
-}
-
-/**
- * cocktail_sort_list - sorts a listint_t doubly-linked list of integers in
- *	ascending order using the cocktail shaker algorithm.
- * @list: ptr to the head of a listint_t doubly-linked list.
+ * cocktail_sort_list - sorts a doubly linked list
+ * of integers in ascending order using the
+ * Cocktail shaker sort algorithm
+ * @list: doubly linked list to be sorted
+ *
  */
 void cocktail_sort_list(listint_t **list)
 {
-	listint_t *tail, *shaker;
-	bool shaken_not_stirred = false;
+	listint_t *curr = NULL, *nxt = NULL;
+	int swapped = 0;
 
-	if (list == NULL || *list == NULL || (*list)->next == NULL)
+	if (!list || !(*list) || !(*list)->next)
 		return;
-
-	for (tail = *list; tail->next != NULL;)
-		tail = tail->next;
-
-	while (shaken_not_stirred == false)
-	{
-		shaken_not_stirred = true;
-		for (shaker = *list; shaker != tail; shaker = shaker->next)
+	do {
+		curr = *list;
+		while (curr->next != NULL)
 		{
-			if (shaker->n > shaker->next->n)
+			nxt = curr->next;
+			if (curr->n > nxt->n)
 			{
-				swap_node_ahead(list, &tail, &shaker);
-				print_list((const listint_t *)*list);
-				shaken_not_stirred = false;
+				curr = swap_right(list, curr, nxt);
+				swapped = 1;
+				print_list(*list);
+			}
+			else
+			{
+				curr = curr->next;
 			}
 		}
-		for (shaker = shaker->prev; shaker != *list;
-				shaker = shaker->prev)
+		if (swapped == 0)
+			break;
+		swapped = 0;
+		while (curr->prev != NULL)
 		{
-			if (shaker->n < shaker->prev->n)
+			nxt = curr->prev;
+			if (curr->n < nxt->n)
 			{
-				swap_node_behind(list, &tail, &shaker);
-				print_list((const listint_t *)*list);
-				shaken_not_stirred = false;
+				curr = swap_left(list, curr, nxt);
+				swapped = 1;
+				print_list(*list);
+			}
+			else
+			{
+				curr = curr->prev;
 			}
 		}
-	}
+	} while (swapped);
+}
+
+/**
+ * swap_right - do a bubble swap moving to the right of list
+ * @list:doubly linked list
+ * @curr: current node on list
+ * @nxt: next node to the right of current node
+ * Return: current node
+ */
+listint_t *swap_right(listint_t **list, listint_t *curr, listint_t *nxt)
+{
+	nxt->prev = curr->prev;
+	curr->prev = nxt;
+	if (nxt->prev != NULL)
+		nxt->prev->next = nxt;
+	else
+		*list = nxt;
+	curr->next = nxt->next;
+	if (curr->next != NULL)
+		curr->next->prev = curr;
+	nxt->next = curr;
+	return (curr);
+}
+
+/**
+ * swap_left - do bubble sort while moving from right to left
+ * of list
+ * @list: doubly linked list
+ * @curr: current node
+ * @nxt: node to left of current node
+ * Return: current node
+ */
+listint_t *swap_left(listint_t **list, listint_t *curr, listint_t *nxt)
+{
+
+	nxt->next = curr->next;
+	curr->prev = nxt->prev;
+	nxt->prev = curr;
+	if (nxt->next != NULL)
+		nxt->next->prev = nxt;
+	if (curr->prev != NULL)
+		curr->prev->next = curr;
+	else
+		*list = curr;
+	curr->next = nxt;
+	return (curr);
 }
