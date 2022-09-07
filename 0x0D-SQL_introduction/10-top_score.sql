@@ -1,3 +1,3 @@
--- lists all rows of the table first_table from the database hbtn_0c_0 in your MySQL server
--- lists the rows a table in a database
-SELECT * FROM second_table;
+-- lists all records of the table second_table of the database hbtn_0c_0 in your MySQL server
+-- displays all records of a table
+SELECT score, name FROM second_table ORDER BY score DESC;
